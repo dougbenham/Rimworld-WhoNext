@@ -47,18 +47,17 @@ namespace CM_Who_Next
 
             Func<Thing, bool> pawnAndCorpseFilter = new Func<Thing, bool>(thing =>
             {
-                Pawn thingPawn = thing as Pawn;
-                if (thing as Pawn != null && (WhoNextMod.settings.allowSwitchingBetweenCorpsesAndLiving || !corpseSelected))
+                if (thing is Pawn pawn && 
+                    (WhoNextMod.settings.allowSwitchingBetweenCorpsesAndLiving || !corpseSelected))
                 {
-                    return filter(thing as Pawn);
+                    return filter(pawn);
                 }
-                else
+
+                if (thing is Corpse thingCorpse &&
+                    thingCorpse.InnerPawn != null &&
+                    (WhoNextMod.settings.allowSwitchingBetweenCorpsesAndLiving || corpseSelected))
                 {
-                    Corpse thingCorpse = thing as Corpse;
-                    if (thingCorpse != null && thingCorpse.InnerPawn != null && (WhoNextMod.settings.allowSwitchingBetweenCorpsesAndLiving || corpseSelected))
-                    {
-                        return filter(thingCorpse.InnerPawn);
-                    }
+	                return filter(thingCorpse.InnerPawn);
                 }
 
                 return false;
